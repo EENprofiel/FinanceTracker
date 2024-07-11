@@ -1,0 +1,22 @@
+{% extends 'FinanceTracker/base.html' %}
+{% block title %}Add Expense{% endblock %}
+{% block content %}
+    <h1>Add Expense</h1>
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="mb-3">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}
+                    <div class="text-danger">
+                        {% for error in field.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Add Expense</button>
+    </form>
+{% endblock %}

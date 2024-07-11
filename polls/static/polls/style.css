@@ -1,0 +1,9 @@
+li a {
+    color: green;
+}
+
+body {
+    background-image: url("images/squirrel.jpg");
+    background-size: cover;
+    background-position: center;
+}

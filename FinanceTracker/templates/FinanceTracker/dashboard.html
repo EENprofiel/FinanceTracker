@@ -1,0 +1,107 @@
+{% extends 'FinanceTracker/base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+    <h1 class="mb-4">Financial Dashboard</h1>
+    <div class="row mt-4 justify-content-between">
+        <div class="col-md-5">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h2 class="h5 mb-0">Expenses</h2>
+                    <a href="{% url 'add_expense' %}" class="btn btn-sm btn-danger">Add Expense</a>
+                </div>
+                <div class="card-body">
+                    <h3 class="h6">One-time Expenses</h3>
+                    <ul class="list-group mb-3">
+                        {% for expense in one_time_expenses %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ expense.description }}
+                                <span class="badge bg-danger rounded-pill">${{ expense.amount }}</span>
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item">No one-time expenses recorded for this month.</li>
+                        {% endfor %}
+                    </ul>
+                    <h3 class="h6">Fixed Expenses</h3>
+                    <ul class="list-group mb-3">
+                        {% for expense in fixed_expenses %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ expense.description }} ({{ expense.get_frequency_display }})
+                                <span class="badge bg-danger rounded-pill">${{ expense.amount }}</span>
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item">No fixed expenses recorded for this month.</li>
+                        {% endfor %}
+                    </ul>
+                    <p class="mb-0">Total Expenses: <strong>${{ total_expense }}</strong></p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h2 class="h5 mb-0">Income</h2>
+                    <a href="{% url 'add_income' %}" class="btn btn-sm btn-success">Add Income</a>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group mb-3">
+                        {% for income in incomes %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ income.source }}
+                                <span class="badge bg-success rounded-pill">${{ income.amount }}</span>
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item">No income recorded for this month.</li>
+                        {% endfor %}
+                    </ul>
+                    <p class="mb-0">Total Income: <strong>${{ total_income }}</strong></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="h5 mb-0 text-center">Monthly Overview</h2>
+                </div>
+                <div class="card-body">
+                    <canvas id="financePieChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add these lines to include the chart data -->
+    {{ chart_data.labels|json_script:"chart-data-labels" }}
+    {{ chart_data.data|json_script:"chart-data-values" }}
+
+{% endblock %}
+
+{% block extra_js %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const labels = JSON.parse(document.getElementById('chart-data-labels').textContent);
+            const data = JSON.parse(document.getElementById('chart-data-values').textContent);
+
+            new Chart(document.getElementById('financePieChart'), {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: ['#dc3545', '#28a745'],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Expenses vs Income'
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}
