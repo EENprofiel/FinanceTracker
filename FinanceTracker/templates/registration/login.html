@@ -1,0 +1,19 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'FinanceTracker/style.css' %}">
+
+<div class="login-form">
+    <h2 class="title">Log In</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ form.username }}
+            <label for="{{ form.username.id_for_label }}">Username</label>
+        </div>
+        <div class="form-group">
+            {{ form.password }}
+            <label for="{{ form.password.id_for_label }}">Password</label>
+        </div>
+        <button type="submit" class="login-btn btn btn-primary">Log In</button>
+    </form>
+</div>

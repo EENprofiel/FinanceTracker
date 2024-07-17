@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.db.models import Sum
 from django.utils import timezone
@@ -35,6 +36,22 @@ def dashboard(request):
         'chart_data': chart_data,
     }
     return render(request, 'FinanceTracker/dashboard.html', context)
+
+
+def custom_login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            # Redirect to a success page.
+            return redirect('dashboard')
+        else:
+            # Return an 'invalid login' error message.
+            messages.error(request, 'Invalid username or password.')
+    # If a GET (or any other method) we'll create a blank form
+    return render(request, 'FinanceTracker/templates/registration/login.html')
 
 
 @login_required
