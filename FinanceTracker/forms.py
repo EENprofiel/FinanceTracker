@@ -7,8 +7,8 @@ class ExpenseForm(forms.ModelForm):
         model = Expense
         fields = ['amount', 'description', 'date', 'expense_type', 'frequency', 'end_date']
         widgets = {
-            'date': forms.DateInput(attrs={'type': 'date'}),
-            'end_date': forms.DateInput(attrs={'type': 'date'}),
+            'date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'end_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
         }
 
 
@@ -17,5 +17,5 @@ class IncomeForm(forms.ModelForm):
         model = Income
         fields = ['amount', 'source', 'date', 'income_type']
         widgets = {
-            'date': forms.DateInput(attrs={'type': 'date'}),
+            'date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
         }
